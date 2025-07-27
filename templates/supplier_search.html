@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Suppliers - Sourcify</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/supplier-search.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Search Header -->
+        <div class="search-header">
+            <h1><i class="fas fa-search"></i> Find Suppliers</h1>
+            <p>Discover trusted suppliers ranked by reviews and quality</p>
+        </div>
+
+        <!-- Search and Filter Controls -->
+        <div class="search-controls">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search suppliers, products, or services...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="filter-controls">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+                
+                <select id="regionFilter">
+                    <option value="">All Regions</option>
+                </select>
+                
+                <select id="sortFilter">
+                    <option value="score">Best Match</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="reviews">Most Reviews</option>
+                    <option value="name">Name A-Z</option>
+                </select>
+                
+                <button id="filterBtn" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="results-summary" id="resultsSummary">
+            <span id="resultsCount">0 suppliers found</span>
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+            </div>
+        </div>
+
+        <!-- Premium Suppliers Section -->
+        <div class="premium-section" id="premiumSection" style="display: none;">
+            <h2><i class="fas fa-crown"></i> Featured Suppliers</h2>
+            <div class="suppliers-grid premium-grid" id="premiumSuppliers">
+                <!-- Premium suppliers will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Regular Suppliers Section -->
+        <div class="suppliers-section">
+            <h2 id="regularSuppliersTitle">All Suppliers</h2>
+            <div class="suppliers-grid" id="regularSuppliers">
+                <!-- Regular suppliers will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Searching suppliers...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>No suppliers found</h3>
+            <p>Try adjusting your search criteria or filters</p>
+        </div>
+    </div>
+
+    <!-- Supplier Details Modal -->
+    <div class="modal" id="supplierModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="supplierModalTitle">Supplier Details</h3>
+                <button class="close-btn" id="closeSupplierModal">&times;</button>
+            </div>
+            <div class="modal-body" id="supplierModalContent">
+                <!-- Supplier details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="contactSupplier">
+                    <i class="fas fa-phone"></i> Contact Supplier
+                </button>
+                <button class="btn btn-street-vendor" id="addToFavorites">
+                    <i class="fas fa-heart"></i> Add to Favorites
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/supplier-search.js"></script>
+</body>
+</html>

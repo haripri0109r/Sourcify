@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Optimization - Sourcify</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/vendor-optimization.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="optimization-header">
+            <h1><i class="fas fa-rocket"></i> Boost Your Business</h1>
+            <p>Increase your visibility and get more customers with our premium optimization features</p>
+        </div>
+
+        <!-- Current Status Card -->
+        <div class="status-card" id="statusCard">
+            <div class="status-header">
+                <h2><i class="fas fa-chart-line"></i> Your Current Performance</h2>
+                <div class="refresh-btn" id="refreshStatus">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </div>
+            <div class="status-content" id="statusContent">
+                <!-- Status content will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Eligibility Check -->
+        <div class="eligibility-section" id="eligibilitySection">
+            <div class="eligibility-card" id="eligibilityCard">
+                <!-- Eligibility content will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Premium Plans -->
+        <div class="plans-section" id="plansSection" style="display: none;">
+            <h2><i class="fas fa-crown"></i> Choose Your Premium Plan</h2>
+            <div class="plans-grid">
+                <!-- Basic Plan -->
+                <div class="plan-card" data-tier="basic">
+                    <div class="plan-header">
+                        <div class="plan-icon">⭐</div>
+                        <h3>Basic Promotion</h3>
+                        <div class="plan-subtitle">Get noticed by more customers</div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Promoted listing badge</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>10% ranking boost</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Priority in search results</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Basic analytics dashboard</span>
+                        </div>
+                    </div>
+                    <div class="plan-pricing">
+                        <div class="price-options">
+                            <div class="price-option" data-duration="monthly">
+                                <span class="price">₹999</span>
+                                <span class="period">/month</span>
+                            </div>
+                            <div class="price-option" data-duration="quarterly">
+                                <span class="price">₹2,499</span>
+                                <span class="period">/3 months</span>
+                                <span class="savings">Save 17%</span>
+                            </div>
+                            <div class="price-option" data-duration="yearly">
+                                <span class="price">₹8,999</span>
+                                <span class="period">/year</span>
+                                <span class="savings">Save 25%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="plan-btn" data-tier="basic">Choose Basic</button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="plan-card featured" data-tier="premium">
+                    <div class="plan-badge">Most Popular</div>
+                    <div class="plan-header">
+                        <div class="plan-icon">👑</div>
+                        <h3>Premium Partner</h3>
+                        <div class="plan-subtitle">Maximum visibility and growth</div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Premium Partner badge</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>20% ranking boost</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Featured in top section</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Advanced analytics</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Customer inquiry insights</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Priority customer support</span>
+                        </div>
+                    </div>
+                    <div class="plan-pricing">
+                        <div class="price-options">
+                            <div class="price-option" data-duration="monthly">
+                                <span class="price">₹1,999</span>
+                                <span class="period">/month</span>
+                            </div>
+                            <div class="price-option" data-duration="quarterly">
+                                <span class="price">₹4,999</span>
+                                <span class="period">/3 months</span>
+                                <span class="savings">Save 17%</span>
+                            </div>
+                            <div class="price-option" data-duration="yearly">
+                                <span class="price">₹17,999</span>
+                                <span class="period">/year</span>
+                                <span class="savings">Save 25%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="plan-btn premium" data-tier="premium">Choose Premium</button>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="plan-card" data-tier="enterprise">
+                    <div class="plan-header">
+                        <div class="plan-icon">💎</div>
+                        <h3>Enterprise Partner</h3>
+                        <div class="plan-subtitle">Complete business solution</div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Enterprise Partner badge</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>30% ranking boost</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Guaranteed top 3 placement</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Comprehensive analytics suite</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Dedicated account manager</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>Custom branding options</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check"></i>
+                            <span>API access for integration</span>
+                        </div>
+                    </div>
+                    <div class="plan-pricing">
+                        <div class="price-options">
+                            <div class="price-option" data-duration="monthly">
+                                <span class="price">₹4,999</span>
+                                <span class="period">/month</span>
+                            </div>
+                            <div class="price-option" data-duration="quarterly">
+                                <span class="price">₹12,499</span>
+                                <span class="period">/3 months</span>
+                                <span class="savings">Save 17%</span>
+                            </div>
+                            <div class="price-option" data-duration="yearly">
+                                <span class="price">₹44,999</span>
+                                <span class="period">/year</span>
+                                <span class="savings">Save 25%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="plan-btn" data-tier="enterprise">Choose Enterprise</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Stories -->
+        <div class="success-stories">
+            <h2><i class="fas fa-trophy"></i> Success Stories</h2>
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="story-content">
+                        <h4>Fresh Farm Supplies</h4>
+                        <p>"After upgrading to Premium, our orders increased by 150% in just 2 months!"</p>
+                        <div class="story-stats">
+                            <span><i class="fas fa-arrow-up"></i> 150% more orders</span>
+                            <span><i class="fas fa-star"></i> 4.8 rating</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="story-content">
+                        <h4>Spice Masters Ltd</h4>
+                        <p>"The Enterprise plan helped us reach customers across 5 states. Best investment ever!"</p>
+                        <div class="story-stats">
+                            <span><i class="fas fa-map-marker-alt"></i> 5 states coverage</span>
+                            <span><i class="fas fa-users"></i> 500+ customers</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="story-content">
+                        <h4>Golden Grains Co.</h4>
+                        <p>"Premium analytics helped us understand our customers better and improve our service."</p>
+                        <div class="story-stats">
+                            <span><i class="fas fa-chart-line"></i> Better insights</span>
+                            <span><i class="fas fa-thumbs-up"></i> 95% satisfaction</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="paymentModalTitle">Complete Your Upgrade</h3>
+                <button class="close-btn" id="closePaymentModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-summary" id="paymentSummary">
+                    <!-- Payment summary will be loaded here -->
+                </div>
+                
+                <div class="payment-form">
+                    <h4>Payment Method</h4>
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="payment" value="card" checked>
+                            <div class="method-content">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </div>
+                        </label>
+                        
+                        <label class="payment-method">
+                            <input type="radio" name="payment" value="upi">
+                            <div class="method-content">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>UPI</span>
+                            </div>
+                        </label>
+                        
+                        <label class="payment-method">
+                            <input type="radio" name="payment" value="netbanking">
+                            <div class="method-content">
+                                <i class="fas fa-university"></i>
+                                <span>Net Banking</span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="card-details" id="cardDetails">
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" placeholder="John Doe">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="cancelPayment">Cancel</button>
+                <button class="btn btn-success" id="processPayment">
+                    <i class="fas fa-lock"></i> Pay Securely
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your request...</p>
+        </div>
+    </div>
+
+    <script src="../scripts/vendor-optimization.js"></script>
+</body>
+</html>
