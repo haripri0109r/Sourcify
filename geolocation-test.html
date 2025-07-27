@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sourcify Geolocation Services Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #00aaff, #0066cc);
+            color: white;
+            border-radius: 16px;
+        }
+        
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.1);
+        }
+        
+        .test-section h3 {
+            color: #004080;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: #00aaff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background: #0088cc;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success { background: #28a745; }
+        .status-warning { background: #ffc107; }
+        .status-error { background: #dc3545; }
+        .status-info { background: #17a2b8; }
+        
+        .vendor-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .vendor-info h4 {
+            margin: 0 0 5px 0;
+            color: #004080;
+        }
+        
+        .vendor-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .vendor-distance {
+            font-weight: bold;
+            color: #00aaff;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #00aaff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .permission-status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .permission-granted {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .permission-denied {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .permission-prompt {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌍 Sourcify Geolocation Services Test</h1>
+        <p>Test and demonstrate the geolocation capabilities of the Sourcify platform</p>
+    </div>
+
+    <div class="grid">
+        <!-- Location Detection Section -->
+        <div class="test-section">
+            <h3>
+                <i class="fas fa-map-marker-alt"></i>
+                Location Detection
+            </h3>
+            <p>Test the basic location detection functionality</p>
+            
+            <div id="permissionStatus" class="permission-status permission-prompt">
+                <span class="status-indicator status-info"></span>
+                Checking location permissions...
+            </div>
+            
+            <button id="getCurrentLocationBtn" class="btn">
+                Get Current Location
+            </button>
+            <button id="checkPermissionsBtn" class="btn">
+                Check Permissions
+            </button>
+            <button id="requestPermissionBtn" class="btn">
+                Request Permission
+            </button>
+            
+            <div id="locationResult" class="result-box" style="display: none;"></div>
+        </div>
+
+        <!-- Vendor Discovery Section -->
+        <div class="test-section">
+            <h3>
+                <i class="fas fa-users"></i>
+                Vendor Discovery
+            </h3>
+            <p>Find nearby vendors based on your location</p>
+            
+            <div style="margin: 15px 0;">
+                <label for="radiusSelect">Search Radius:</label>
+                <select id="radiusSelect" style="margin-left: 10px; padding: 5px;">
+                    <option value="1000">1 km</option>
+                    <option value="3000">3 km</option>
+                    <option value="5000" selected>5 km</option>
+                    <option value="10000">10 km</option>
+                </select>
+            </div>
+            
+            <button id="findVendorsBtn" class="btn">
+                Find Nearby Vendors
+            </button>
+            <button id="clearVendorsBtn" class="btn">
+                Clear Results
+            </button>
+            
+            <div id="vendorResults" style="margin-top: 20px;"></div>
+        </div>
+
+        <!-- Distance Calculator Section -->
+        <div class="test-section">
+            <h3>
+                <i class="fas fa-ruler"></i>
+                Distance Calculator
+            </h3>
+            <p>Calculate distances between locations</p>
+            
+            <div style="margin: 15px 0;">
+                <input type="number" id="targetLat" placeholder="Target Latitude" step="any" style="width: 45%; padding: 8px; margin: 2px;">
+                <input type="number" id="targetLng" placeholder="Target Longitude" step="any" style="width: 45%; padding: 8px; margin: 2px;">
+            </div>
+            
+            <button id="calculateDistanceBtn" class="btn">
+                Calculate Distance
+            </button>
+            <button id="useDelhi" class="btn" onclick="setDelhiCoords()">
+                Use Delhi Coords
+            </button>
+            
+            <div id="distanceResult" class="result-box" style="display: none;"></div>
+        </div>
+
+        <!-- Location Watching Section -->
+        <div class="test-section">
+            <h3>
+                <i class="fas fa-eye"></i>
+                Location Watching
+            </h3>
+            <p>Monitor location changes in real-time</p>
+            
+            <button id="startWatchingBtn" class="btn">
+                Start Watching
+            </button>
+            <button id="stopWatchingBtn" class="btn" disabled>
+                Stop Watching
+            </button>
+            
+            <div id="watchingStatus" style="margin: 15px 0; font-weight: 600;"></div>
+            <div id="watchingResult" class="result-box" style="display: none;"></div>
+        </div>
+
+        <!-- Cache Management Section -->
+        <div class="test-section">
+            <h3>
+                <i class="fas fa-database"></i>
+                Cache Management
+            </h3>
+            <p>Manage location data cache</p>
+            
+            <button id="viewCacheBtn" class="btn">
+                View Cache
+            </button>
+            <button id="clearCacheBtn" class="btn">
+                Clear Cache
+            </button>
+            
+            <div id="cacheResult" class="result-box" style="display: none;"></div>
+        </div>
+
+        <!-- Debug Information Section -->
+        <div class="test-section">
+            <h3>
+                <i class="fas fa-bug"></i>
+                Debug Information
+            </h3>
+            <p>System information and debugging data</p>
+            
+            <button id="getDebugInfoBtn" class="btn">
+                Get Debug Info
+            </button>
+            <button id="testErrorHandlingBtn" class="btn">
+                Test Error Handling
+            </button>
+            
+            <div id="debugResult" class="result-box" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Load Geolocation Service -->
+    <script src="scripts/geolocation-service.js"></script>
+    
+    <script>
+        // Initialize test interface
+        let geoService;
+        let watchId = null;
+        
+        // Wait for geolocation service to initialize
+        window.addEventListener('load', async () => {
+            geoService = window.geolocationService;
+            await initializeTests();
+        });
+        
+        async function initializeTests() {
+            // Check initial permission status
+            updatePermissionStatus();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Auto-load cached location if available
+            const cachedLocation = geoService.getCurrentLocationInfo();
+            if (cachedLocation) {
+                displayLocationResult(cachedLocation, 'Loaded from cache');
+            }
+        }
+        
+        function setupEventListeners() {
+            // Location Detection
+            document.getElementById('getCurrentLocationBtn').addEventListener('click', getCurrentLocation);
+            document.getElementById('checkPermissionsBtn').addEventListener('click', checkPermissions);
+            document.getElementById('requestPermissionBtn').addEventListener('click', requestPermission);
+            
+            // Vendor Discovery
+            document.getElementById('findVendorsBtn').addEventListener('click', findVendors);
+            document.getElementById('clearVendorsBtn').addEventListener('click', clearVendors);
+            
+            // Distance Calculator
+            document.getElementById('calculateDistanceBtn').addEventListener('click', calculateDistance);
+            
+            // Location Watching
+            document.getElementById('startWatchingBtn').addEventListener('click', startWatching);
+            document.getElementById('stopWatchingBtn').addEventListener('click', stopWatching);
+            
+            // Cache Management
+            document.getElementById('viewCacheBtn').addEventListener('click', viewCache);
+            document.getElementById('clearCacheBtn').addEventListener('click', clearCache);
+            
+            // Debug Information
+            document.getElementById('getDebugInfoBtn').addEventListener('click', getDebugInfo);
+            document.getElementById('testErrorHandlingBtn').addEventListener('click', testErrorHandling);
+        }
+        
+        async function getCurrentLocation() {
+            const btn = document.getElementById('getCurrentLocationBtn');
+            const originalText = btn.textContent;
+            
+            btn.innerHTML = '<span class="loading"></span> Getting Location...';
+            btn.disabled = true;
+            
+            try {
+                const location = await geoService.getCurrentPosition();
+                displayLocationResult(location, 'Successfully retrieved location');
+                updatePermissionStatus();
+            } catch (error) {
+                displayLocationResult(null, `Error: ${error.message}`);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        async function checkPermissions() {
+            try {
+                const permission = await geoService.checkPermissions();
+                updatePermissionStatus(permission);
+                showResult('permissionResult', `Permission status: ${permission}`);
+            } catch (error) {
+                showResult('permissionResult', `Error checking permissions: ${error.message}`);
+            }
+        }
+        
+        async function requestPermission() {
+            try {
+                await geoService.requestLocationPermission();
+                updatePermissionStatus();
+                showResult('permissionResult', 'Permission granted successfully');
+            } catch (error) {
+                showResult('permissionResult', `Permission request failed: ${error.message}`);
+                updatePermissionStatus('denied');
+            }
+        }
+        
+        async function findVendors() {
+            const btn = document.getElementById('findVendorsBtn');
+            const radius = parseInt(document.getElementById('radiusSelect').value);
+            const originalText = btn.textContent;
+            
+            btn.innerHTML = '<span class="loading"></span> Finding Vendors...';
+            btn.disabled = true;
+            
+            try {
+                const vendors = await geoService.findNearbyVendors(radius);
+                displayVendors(vendors);
+            } catch (error) {
+                showResult('vendorResults', `Error finding vendors: ${error.message}`);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        function clearVendors() {
+            document.getElementById('vendorResults').innerHTML = '';
+        }
+        
+        function calculateDistance() {
+            const lat = parseFloat(document.getElementById('targetLat').value);
+            const lng = parseFloat(document.getElementById('targetLng').value);
+            
+            if (isNaN(lat) || isNaN(lng)) {
+                showResult('distanceResult', 'Please enter valid latitude and longitude values');
+                return;
+            }
+            
+            const distance = geoService.calculateDistanceToVendor(lat, lng);
+            const currentLocation = geoService.getCurrentLocationInfo();
+            
+            if (distance && currentLocation) {
+                const result = `Distance from your location (${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}) to target (${lat}, ${lng}): ${distance}`;
+                showResult('distanceResult', result);
+            } else {
+                showResult('distanceResult', 'Current location not available. Please get your location first.');
+            }
+        }
+        
+        function setDelhiCoords() {
+            document.getElementById('targetLat').value = '28.6139';
+            document.getElementById('targetLng').value = '77.2090';
+        }
+        
+        function startWatching() {
+            const startBtn = document.getElementById('startWatchingBtn');
+            const stopBtn = document.getElementById('stopWatchingBtn');
+            const status = document.getElementById('watchingStatus');
+            
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            status.innerHTML = '<span class="status-indicator status-info"></span>Watching for location changes...';
+            
+            geoService.startWatching((location, error) => {
+                if (location) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const result = `[${timestamp}] Location updated:\nLat: ${location.lat}\nLng: ${location.lng}\nAccuracy: ${location.accuracy}m\nAddress: ${location.address || 'Unknown'}`;
+                    showResult('watchingResult', result);
+                } else if (error) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const result = `[${timestamp}] Error: ${error.message}`;
+                    showResult('watchingResult', result);
+                }
+            });
+        }
+        
+        function stopWatching() {
+            const startBtn = document.getElementById('startWatchingBtn');
+            const stopBtn = document.getElementById('stopWatchingBtn');
+            const status = document.getElementById('watchingStatus');
+            
+            geoService.stopWatching();
+            
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            status.innerHTML = '<span class="status-indicator status-warning"></span>Location watching stopped';
+        }
+        
+        function viewCache() {
+            try {
+                const cache = localStorage.getItem('sourcify_location_cache');
+                if (cache) {
+                    const cacheData = JSON.parse(cache);
+                    const age = Date.now() - cacheData.cachedAt;
+                    const ageMinutes = Math.floor(age / 60000);
+                    
+                    const result = `Cache found (${ageMinutes} minutes old):\n${JSON.stringify(cacheData, null, 2)}`;
+                    showResult('cacheResult', result);
+                } else {
+                    showResult('cacheResult', 'No cache data found');
+                }
+            } catch (error) {
+                showResult('cacheResult', `Error reading cache: ${error.message}`);
+            }
+        }
+        
+        function clearCache() {
+            try {
+                localStorage.removeItem('sourcify_location_cache');
+                showResult('cacheResult', 'Cache cleared successfully');
+            } catch (error) {
+                showResult('cacheResult', `Error clearing cache: ${error.message}`);
+            }
+        }
+        
+        async function getDebugInfo() {
+            try {
+                const debugInfo = {
+                    geolocationSupported: geoService.isGeolocationSupported(),
+                    currentLocation: geoService.getCurrentLocationInfo(),
+                    permissionStatus: await geoService.checkPermissions(),
+                    cacheExists: !!localStorage.getItem('sourcify_location_cache'),
+                    userAgent: navigator.userAgent,
+                    timestamp: new Date().toISOString()
+                };
+                
+                showResult('debugResult', JSON.stringify(debugInfo, null, 2));
+            } catch (error) {
+                showResult('debugResult', `Error getting debug info: ${error.message}`);
+            }
+        }
+        
+        function testErrorHandling() {
+            // Simulate various error conditions
+            const errors = [
+                'Permission denied by user',
+                'Location information unavailable',
+                'Request timeout',
+                'Network error'
+            ];
+            
+            const randomError = errors[Math.floor(Math.random() * errors.length)];
+            showResult('debugResult', `Simulated error: ${randomError}`);
+        }
+        
+        function displayLocationResult(location, message) {
+            const resultBox = document.getElementById('locationResult');
+            
+            if (location) {
+                const result = `${message}\n\nLocation Details:\nLatitude: ${location.lat}\nLongitude: ${location.lng}\nAccuracy: ${location.accuracy}m\nAddress: ${location.address || 'Unknown'}\nCity: ${location.city || 'Unknown'}\nState: ${location.state || 'Unknown'}\nCountry: ${location.country || 'Unknown'}\nTimestamp: ${new Date(location.timestamp).toLocaleString()}`;
+                resultBox.textContent = result;
+            } else {
+                resultBox.textContent = message;
+            }
+            
+            resultBox.style.display = 'block';
+        }
+        
+        function displayVendors(vendors) {
+            const container = document.getElementById('vendorResults');
+            
+            if (vendors.length === 0) {
+                container.innerHTML = '<p>No vendors found in the specified radius.</p>';
+                return;
+            }
+            
+            const vendorHTML = vendors.map(vendor => `
+                <div class="vendor-card">
+                    <div class="vendor-info">
+                        <h4>${vendor.name}</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> ${vendor.location}</p>
+                        <p><i class="fas fa-star"></i> ${vendor.rating} • ${vendor.collaborationHistory} collaborations</p>
+                        <p><i class="fas fa-clock"></i> ${vendor.lastSeen}</p>
+                    </div>
+                    <div class="vendor-distance">${vendor.distance}</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `
+                <h4>Found ${vendors.length} vendors:</h4>
+                ${vendorHTML}
+            `;
+        }
+        
+        function showResult(elementId, content) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = content;
+                element.style.display = 'block';
+            }
+        }
+        
+        async function updatePermissionStatus(status = null) {
+            const statusElement = document.getElementById('permissionStatus');
+            
+            if (!status) {
+                try {
+                    status = await geoService.checkPermissions();
+                } catch (error) {
+                    status = 'unknown';
+                }
+            }
+            
+            let statusClass, statusText, indicator;
+            
+            switch (status) {
+                case 'granted':
+                    statusClass = 'permission-granted';
+                    statusText = 'Location permission granted';
+                    indicator = 'status-success';
+                    break;
+                case 'denied':
+                    statusClass = 'permission-denied';
+                    statusText = 'Location permission denied';
+                    indicator = 'status-error';
+                    break;
+                case 'prompt':
+                    statusClass = 'permission-prompt';
+                    statusText = 'Location permission required';
+                    indicator = 'status-warning';
+                    break;
+                default:
+                    statusClass = 'permission-prompt';
+                    statusText = 'Location permission status unknown';
+                    indicator = 'status-info';
+            }
+            
+            statusElement.className = `permission-status ${statusClass}`;
+            statusElement.innerHTML = `<span class="status-indicator ${indicator}"></span>${statusText}`;
+        }
+    </script>
+</body>
+</html>

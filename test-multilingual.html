@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multilingual Test - Sourcify</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .test-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 data-translate="app_title">Sourcify</h1>
+        <p data-translate="app_subtitle">Connecting Street Food Vendors, Raw Material Suppliers & Transport Services</p>
+        
+        <div class="test-section">
+            <h3>Login Elements Test</h3>
+            <div class="test-item">
+                <strong>Street Vendor:</strong> <span data-translate="street_vendor">Street Food Vendor</span>
+            </div>
+            <div class="test-item">
+                <strong>Raw Material:</strong> <span data-translate="raw_material">Raw Material Vendor</span>
+            </div>
+            <div class="test-item">
+                <strong>Transport:</strong> <span data-translate="transport_service">Transport Service</span>
+            </div>
+            <div class="test-item">
+                <strong>Username:</strong> <input type="text" data-translate="username_email" placeholder="Username or Email" style="width: 200px; padding: 5px;">
+            </div>
+            <div class="test-item">
+                <strong>Password:</strong> <input type="password" data-translate="password" placeholder="Password" style="width: 200px; padding: 5px;">
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Dashboard Elements Test</h3>
+            <div class="test-item">
+                <strong>Dashboard:</strong> <span data-translate="dashboard">Dashboard</span>
+            </div>
+            <div class="test-item">
+                <strong>Profile:</strong> <span data-translate="profile">Profile</span>
+            </div>
+            <div class="test-item">
+                <strong>Settings:</strong> <span data-translate="settings">Settings</span>
+            </div>
+            <div class="test-item">
+                <strong>Logout:</strong> <span data-translate="logout">Logout</span>
+            </div>
+            <div class="test-item">
+                <strong>Search:</strong> <span data-translate="search">Search</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Action Buttons Test</h3>
+            <div class="test-item">
+                <button class="btn btn-primary"><span data-translate="save">Save</span></button>
+                <button class="btn btn-street-vendor"><span data-translate="edit">Edit</span></button>
+                <button class="btn btn-raw-material"><span data-translate="delete">Delete</span></button>
+                <button class="btn btn-transport"><span data-translate="cancel">Cancel</span></button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Status Test</h3>
+            <div class="test-item">
+                <span class="badge" style="background: #27ae60; color: white; padding: 4px 8px; border-radius: 4px;" data-translate="active">Active</span>
+                <span class="badge" style="background: #f39c12; color: white; padding: 4px 8px; border-radius: 4px;" data-translate="pending">Pending</span>
+                <span class="badge" style="background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px;" data-translate="cancelled">Cancelled</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Language Test Instructions</h3>
+            <p><strong>How to test:</strong></p>
+            <ol>
+                <li>Look for the language selector dropdown in the top-right corner</li>
+                <li>Select different languages (English, हिंदी, தமிழ்)</li>
+                <li>Watch all the text elements change language</li>
+                <li>Check that placeholders in input fields also change</li>
+                <li>Verify that the selected language persists when you refresh the page</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="scripts/multilingual.js"></script>
+</body>
+</html>

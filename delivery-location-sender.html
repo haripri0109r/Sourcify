@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="delivery_tracker_title">Delivery Location Tracker - Sourcify</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .delivery-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .delivery-header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--primary-color);
+    }
+    
+    .delivery-header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .control-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 102, 204, 0.1);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .control-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-color);
+    }
+    
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    
+    .status-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .status-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    .status-btn.preparing {
+      background: #ffc107;
+      color: #000;
+    }
+    
+    .status-btn.pickup {
+      background: #17a2b8;
+      color: white;
+    }
+    
+    .status-btn.transit {
+      background: #007bff;
+      color: white;
+    }
+    
+    .status-btn.delivered {
+      background: #28a745;
+      color: white;
+    }
+    
+    .status-btn.active {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .tracking-controls {
+      text-align: center;
+    }
+    
+    .start-btn {
+      background: linear-gradient(135deg, var(--primary-color), #0056b3);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+    }
+    
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
+    }
+    
+    .start-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .stop-btn {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+    }
+    
+    .stop-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+    }
+    
+    .log-container {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    .connection-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+    }
+    
+    .connection-status.connected {
+      background: var(--success-color);
+      color: white;
+    }
+    
+    .connection-status.disconnected {
+      background: var(--danger-color);
+      color: white;
+    }
+    
+    .connection-status.connecting {
+      background: var(--warning-color);
+      color: white;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: var(--light-bg);
+      border-radius: 8px;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+    
+    @media (max-width: 768px) {
+      .delivery-container {
+        padding: 10px;
+      }
+      
+      .control-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .status-controls {
+        flex-direction: column;
+      }
+      
+      .status-btn {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Connection Status -->
+  <div class="connection-status connecting" id="connectionStatus">
+    <i class="fas fa-spinner fa-spin"></i> <span data-translate="connecting">Connecting...</span>
+  </div>
+
+  <div class="delivery-container">
+    <!-- Header -->
+    <div class="delivery-header">
+      <h1><i class="fas fa-truck"></i> <span data-translate="delivery_tracker_title">Delivery Location Tracker</span></h1>
+      <p data-translate="delivery_description">Send real-time location updates to customers</p>
+    </div>
+
+    <!-- Delivery Information -->
+    <div class="control-card">
+      <h3><i class="fas fa-info-circle"></i> <span data-translate="delivery_information">Delivery Information</span></h3>
+      <div class="control-row">
+        <div class="form-group">
+          <label for="orderId" data-translate="order_id">Order ID</label>
+          <input type="text" id="orderId" value="ORD-2024-001" placeholder="Enter Order ID">
+        </div>
+        <div class="form-group">
+          <label for="deliveryPersonId" data-translate="delivery_person_id">Delivery Person ID</label>
+          <input type="text" id="deliveryPersonId" value="DEL-001" placeholder="Enter Delivery Person ID">
+        </div>
+        <div class="form-group">
+          <label for="deliveryPersonName" data-translate="delivery_person_name">Delivery Person Name</label>
+          <input type="text" id="deliveryPersonName" value="Raj Kumar" placeholder="Enter Name">
+        </div>
+        <div class="form-group">
+          <label for="contactNumber" data-translate="contact_number">Contact Number</label>
+          <input type="tel" id="contactNumber" value="+91 98765 43210" placeholder="Enter Contact Number">
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Status Control -->
+    <div class="control-card">
+      <h3><i class="fas fa-tasks"></i> <span data-translate="order_status">Order Status</span></h3>
+      <div class="status-controls">
+        <button class="status-btn preparing active" data-status="preparing" onclick="updateOrderStatus('preparing')">
+          <i class="fas fa-utensils"></i> <span data-translate="preparing">Preparing</span>
+        </button>
+        <button class="status-btn pickup" data-status="pickup" onclick="updateOrderStatus('pickup')">
+          <i class="fas fa-box"></i> <span data-translate="picked_up">Picked Up</span>
+        </button>
+        <button class="status-btn transit" data-status="transit" onclick="updateOrderStatus('transit')">
+          <i class="fas fa-truck"></i> <span data-translate="in_transit">In Transit</span>
+        </button>
+        <button class="status-btn delivered" data-status="delivered" onclick="updateOrderStatus('delivered')">
+          <i class="fas fa-check-circle"></i> <span data-translate="delivered">Delivered</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Location Tracking Controls -->
+    <div class="control-card">
+      <h3><i class="fas fa-map-marker-alt"></i> <span data-translate="location_tracking">Location Tracking</span></h3>
+      <div class="tracking-controls">
+        <button class="start-btn" id="startTrackingBtn" onclick="startLocationTracking()">
+          <i class="fas fa-play"></i> <span data-translate="start_tracking">Start Location Tracking</span>
+        </button>
+        <button class="stop-btn" id="stopTrackingBtn" onclick="stopLocationTracking()" style="display: none;">
+          <i class="fas fa-stop"></i> <span data-translate="stop_tracking">Stop Tracking</span>
+        </button>
+      </div>
+      
+      <!-- Tracking Statistics -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="locationsSent">0</div>
+          <div class="stat-label" data-translate="locations_sent">Locations Sent</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="trackingDuration">00:00</div>
+          <div class="stat-label" data-translate="tracking_duration">Duration</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="lastAccuracy">--</div>
+          <div class="stat-label" data-translate="gps_accuracy">GPS Accuracy (m)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="currentStatus">preparing</div>
+          <div class="stat-label" data-translate="current_status">Current Status</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="control-card">
+      <h3><i class="fas fa-list"></i> <span data-translate="activity_log">Activity Log</span></h3>
+      <div class="log-container" id="activityLog">
+        <div style="color: #6c757d; text-align: center; padding: 20px;">
+          <span data-translate="no_activity">No activity yet. Start tracking to see logs.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/multilingual.js"></script>
+  <script>
+    // Configuration
+    const WEBSOCKET_URL = 'ws://localhost:3000';
+    const LOCATION_UPDATE_INTERVAL = 5000; // 5 seconds
+    
+    // Global variables
+    let ws = null;
+    let trackingInterval = null;
+    let isTracking = false;
+    let locationsSent = 0;
+    let trackingStartTime = null;
+    let currentOrderStatus = 'preparing';
+    
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      connectWebSocket();
+      updateStatusDisplay();
+      
+      // Apply multilingual support if available
+      if (window.multilingualManager) {
+        window.multilingualManager.applyTranslations();
+      }
+    });
+    
+    function connectWebSocket() {
+      updateConnectionStatus('connecting');
+      
+      ws = new WebSocket(WEBSOCKET_URL);
+      
+      ws.onopen = function() {
+        log('Connected to tracking server');
+        updateConnectionStatus('connected');
+      };
+      
+      ws.onmessage = function(event) {
+        try {
+          const message = JSON.parse(event.data);
+          log(`Received: ${message.type || 'location update'}`);
+        } catch (error) {
+          log(`Received: ${event.data}`);
+        }
+      };
+      
+      ws.onerror = function(error) {
+        log('WebSocket error: ' + error.message);
+        updateConnectionStatus('disconnected');
+      };
+      
+      ws.onclose = function() {
+        log('WebSocket connection closed. Reconnecting in 3s...');
+        updateConnectionStatus('disconnected');
+        setTimeout(connectWebSocket, 3000);
+      };
+    }
+    
+    function startLocationTracking() {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+        return;
+      }
+      
+      if (isTracking) {
+        return;
+      }
+      
+      isTracking = true;
+      trackingStartTime = Date.now();
+      locationsSent = 0;
+      
+      // Update UI
+      document.getElementById('startTrackingBtn').style.display = 'none';
+      document.getElementById('stopTrackingBtn').style.display = 'inline-block';
+      
+      log('Started location tracking');
+      
+      // Start sending location updates
+      trackingInterval = setInterval(sendLocationUpdate, LOCATION_UPDATE_INTERVAL);
+      
+      // Send initial location immediately
+      sendLocationUpdate();
+      
+      // Start duration timer
+      updateTrackingDuration();
+    }
+    
+    function stopLocationTracking() {
+      if (!isTracking) {
+        return;
+      }
+      
+      isTracking = false;
+      
+      if (trackingInterval) {
+        clearInterval(trackingInterval);
+        trackingInterval = null;
+      }
+      
+      // Update UI
+      document.getElementById('startTrackingBtn').style.display = 'inline-block';
+      document.getElementById('stopTrackingBtn').style.display = 'none';
+      
+      log('Stopped location tracking');
+    }
+    
+    function sendLocationUpdate() {
+      if (!isTracking || !ws || ws.readyState !== WebSocket.OPEN) {
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const { latitude, longitude, accuracy } = position.coords;
+          const orderId = document.getElementById('orderId').value;
+          const deliveryPersonId = document.getElementById('deliveryPersonId').value;
+          
+          const locationData = {
+            type: 'delivery_location',
+            orderId: orderId,
+            deliveryPersonId: deliveryPersonId,
+            lat: latitude,
+            lng: longitude,
+            accuracy: accuracy,
+            status: currentOrderStatus,
+            timestamp: Date.now()
+          };
+          
+          ws.send(JSON.stringify(locationData));
+          
+          locationsSent++;
+          document.getElementById('locationsSent').textContent = locationsSent;
+          document.getElementById('lastAccuracy').textContent = Math.round(accuracy);
+          
+          log(`Sent location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`);
+        },
+        function(error) {
+          log(`Location error: ${error.message}. Using fallback location.`);
+          sendFallbackLocation();
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 10000
+        }
+      );
+    }
+    
+    function sendFallbackLocation() {
+      // Coimbatore coordinates as fallback
+      const latitude = 11.0168 + (Math.random() - 0.5) * 0.01; // Add some variation
+      const longitude = 76.9558 + (Math.random() - 0.5) * 0.01;
+      const orderId = document.getElementById('orderId').value;
+      const deliveryPersonId = document.getElementById('deliveryPersonId').value;
+      
+      const locationData = {
+        type: 'delivery_location',
+        orderId: orderId,
+        deliveryPersonId: deliveryPersonId,
+        lat: latitude,
+        lng: longitude,
+        accuracy: 50,
+        status: currentOrderStatus,
+        timestamp: Date.now()
+      };
+      
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(locationData));
+        
+        locationsSent++;
+        document.getElementById('locationsSent').textContent = locationsSent;
+        document.getElementById('lastAccuracy').textContent = '50';
+        
+        log(`Sent fallback location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+      }
+    }
+    
+    function updateOrderStatus(status) {
+      currentOrderStatus = status;
+      
+      // Update UI
+      document.querySelectorAll('.status-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-status="${status}"]`).classList.add('active');
+      
+      // Update status display
+      document.getElementById('currentStatus').textContent = status;
+      
+      // Send status update to server
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        const statusData = {
+          type: 'order_status_update',
+          orderId: document.getElementById('orderId').value,
+          status: status,
+          timestamp: Date.now(),
+          deliveryPersonId: document.getElementById('deliveryPersonId').value
+        };
+        
+        ws.send(JSON.stringify(statusData));
+        log(`Updated order status to: ${status}`);
+      }
+    }
+    
+    function updateTrackingDuration() {
+      if (!isTracking || !trackingStartTime) {
+        return;
+      }
+      
+      const duration = Date.now() - trackingStartTime;
+      const minutes = Math.floor(duration / 60000);
+      const seconds = Math.floor((duration % 60000) / 1000);
+      
+      document.getElementById('trackingDuration').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      setTimeout(updateTrackingDuration, 1000);
+    }
+    
+    function updateStatusDisplay() {
+      document.getElementById('currentStatus').textContent = currentOrderStatus;
+    }
+    
+    function updateConnectionStatus(status) {
+      const statusElement = document.getElementById('connectionStatus');
+      statusElement.className = `connection-status ${status}`;
+      
+      switch (status) {
+        case 'connected':
+          statusElement.innerHTML = '<i class="fas fa-check-circle"></i> <span data-translate="connected">Connected</span>';
+          break;
+        case 'disconnected':
+          statusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span data-translate="disconnected">Disconnected</span>';
+          break;
+        case 'connecting':
+          statusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span data-translate="connecting">Connecting...</span>';
+          break;
+      }
+      
+      // Apply translations if available
+      if (window.multilingualManager) {
+        window.multilingualManager.applyTranslations();
+      }
+    }
+    
+    function log(message) {
+      const logContainer = document.getElementById('activityLog');
+      const timestamp = new Date().toLocaleTimeString();
+      const logEntry = document.createElement('div');
+      logEntry.style.marginBottom = '5px';
+      logEntry.innerHTML = `<span style="color: #6c757d;">[${timestamp}]</span> ${message}`;
+      
+      // Clear "no activity" message if it exists
+      if (logContainer.children.length === 1 && logContainer.children[0].style.textAlign === 'center') {
+        logContainer.innerHTML = '';
+      }
+      
+      logContainer.appendChild(logEntry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+      
+      // Keep only last 50 log entries
+      while (logContainer.children.length > 50) {
+        logContainer.removeChild(logContainer.firstChild);
+      }
+    }
+  </script>
+</body>
+</html>
