@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-i18n="dashboard_title">Dashboard - FoodChain Connect</title>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/dashboard.css"/>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1><i class="fas fa-utensils"></i> <span data-i18n="app_name">FoodChain Connect</span></h1>
+      <select id="languageSelector">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="ta">தமிழ்</option>
+      </select>
+    </header>
+
+    <nav class="dashboard-nav">
+      <ul>
+        <li><a href="#" data-i18n="nav_home">Home</a></li>
+        <li><a href="#" data-i18n="nav_profile">Profile</a></li>
+        <li><a href="#" data-i18n="nav_orders">Orders</a></li>
+        <li><a href="#" data-i18n="nav_logout">Logout</a></li>
+      </ul>
+    </nav>
+
+    <main class="dashboard-main">
+      <section class="dashboard-welcome">
+        <h2 data-i18n="welcome_heading">Welcome Back!</h2>
+        <p data-i18n="dashboard_description">
+          Here's a quick overview of your activity.
+        </p>
+      </section>
+
+      <section class="dashboard-stats">
+        <div class="stat-card">
+          <h3 data-i18n="stat_orders">Total Orders</h3>
+          <p>120</p>
+        </div>
+        <div class="stat-card">
+          <h3 data-i18n="stat_pending">Pending Orders</h3>
+          <p>5</p>
+        </div>
+        <div class="stat-card">
+          <h3 data-i18n="stat_completed">Completed Orders</h3>
+          <p>115</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="scripts/lang.js"></script>
+</body>
+</html>

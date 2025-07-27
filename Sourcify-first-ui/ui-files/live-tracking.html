@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Goods Tracking</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; margin: 0; }
+    .tracking-header { text-align: center; padding: 24px 0 8px; color: #0066cc; font-size: 2rem; font-weight: 700; }
+    #map { width: 100%; height: 70vh; border-radius: 18px; box-shadow: 0 4px 24px #0066cc22; margin: 0 auto; max-width: 900px; }
+    .info-card { max-width: 900px; margin: 24px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px #0066cc22; padding: 18px 28px; font-size: 1.1rem; color: #004080; }
+    @media (max-width: 600px) { #map, .info-card { max-width: 100%; border-radius: 0; } .info-card { padding: 12px; } }
+  </style>
+</head>
+<body>
+  <div class="tracking-header">Live Goods Tracking</div>
+  <div id="map"></div>
+  <div class="info-card" id="statusInfo">
+    <b>Status:</b> <span id="status">Waiting for location...</span>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    // Initialize map centered on Coimbatore
+    const map = L.map('map').setView([11.0168, 76.9558], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Custom icon for the goods/vehicle
+    const goodsIcon = L.divIcon({
+      className: 'live-marker',
+      html: '<div style="background-color: #28a745; width: 22px; height: 22px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);"></div>',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11]
+    });
+
+    let liveMarker = L.marker([11.0168, 76.9558], { icon: goodsIcon }).addTo(map)
+      .bindPopup('Waiting for live location...')
+      .openPopup();
+
+    // WebSocket for live updates
+    let ws = null;
+    function connectWebSocket() {
+      ws = new WebSocket('ws://localhost:3000');
+      ws.onopen = function() {
+        document.getElementById('status').textContent = 'Connected. Waiting for location...';
+      };
+      ws.onmessage = async function(event) {
+        const { lat, lng } = JSON.parse(event.data);
+        liveMarker.setLatLng([lat, lng]);
+        map.panTo([lat, lng]);
+        const place = await getPlaceName(lat, lng);
+        liveMarker.setPopupContent(`Goods Location<br>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}<br><b>Place:</b> ${place}`);
+        liveMarker.openPopup();
+        document.getElementById('status').textContent = `Goods are on the way! Last seen at ${place}`;
+      };
+      ws.onerror = function(err) {
+        document.getElementById('status').textContent = 'Connection error. Please try again.';
+      };
+      ws.onclose = function() {
+        document.getElementById('status').textContent = 'Disconnected. Reconnecting...';
+        setTimeout(connectWebSocket, 3000);
+      };
+    }
+    connectWebSocket();
+
+    // Reverse geocoding to get place name
+    async function getPlaceName(lat, lng) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+        const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+        if (!res.ok) return 'Unknown Place';
+        const data = await res.json();
+        if (data.address && (data.address.city || data.address.town || data.address.village)) {
+          return data.address.city || data.address.town || data.address.village;
+        }
+        if (data.display_name) return data.display_name.split(',')[0];
+        return 'Unknown Place';
+      } catch {
+        return 'Unknown Place';
+      }
+    }
+  </script>
+</body>
+</html> 

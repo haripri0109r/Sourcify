@@ -1,0 +1,336 @@
+/* Street Vendor Specific Styles */
+
+/* Street Vendor Color Theme */
+.street-vendor-theme {
+    --primary-color: var(--street-vendor-color);
+    --primary-hover: #ff5252;
+    --primary-light: #ffebee;
+}
+
+/* Header Customization */
+.navbar .navbar-brand {
+    color: var(--street-vendor-color);
+}
+
+.navbar .navbar-brand i {
+    color: var(--street-vendor-color);
+}
+
+/* Card Headers */
+.street-vendor-theme .card-title {
+    color: var(--street-vendor-color);
+}
+
+.street-vendor-theme .card-title i {
+    color: var(--street-vendor-color);
+}
+
+/* Product Card Customization */
+.street-vendor-theme .product-card {
+    border-left: 4px solid var(--street-vendor-color);
+}
+
+.street-vendor-theme .product-price {
+    color: var(--street-vendor-color);
+}
+
+/* Button Customizations */
+.btn-street-vendor {
+    background: linear-gradient(135deg, var(--street-vendor-color), #ff5252);
+    color: var(--white);
+    border: none;
+}
+
+.btn-street-vendor:hover {
+    background: linear-gradient(135deg, #ff5252, #f44336);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+}
+
+.btn-street-vendor:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Cart Customization */
+.street-vendor-theme .cart-count {
+    background: var(--street-vendor-color);
+}
+
+.street-vendor-theme .cart-item-price {
+    color: var(--street-vendor-color);
+}
+
+.street-vendor-theme .total-row {
+    color: var(--street-vendor-color);
+}
+
+/* Collaboration Section */
+.collaboration-content {
+    background: linear-gradient(135deg, #ffebee, #fff);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.collaboration-item {
+    border-left: 4px solid var(--street-vendor-color);
+    background: var(--white);
+}
+
+.collaboration-title {
+    color: var(--street-vendor-color);
+}
+
+.collaboration-members {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.member-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--street-vendor-color);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.collaboration-savings {
+    background: #e8f5e8;
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+/* Order Tracking Customization */
+.street-vendor-theme .tracking-item {
+    border-left: 4px solid var(--street-vendor-color);
+}
+
+.street-vendor-theme .order-id {
+    color: var(--street-vendor-color);
+}
+
+.street-vendor-theme .progress-step.completed {
+    background: var(--street-vendor-color);
+}
+
+/* Location Range Customization */
+.street-vendor-theme .range-slider::-webkit-slider-thumb {
+    background: var(--street-vendor-color);
+}
+
+.street-vendor-theme .range-slider::-moz-range-thumb {
+    background: var(--street-vendor-color);
+}
+
+.street-vendor-theme .range-value {
+    color: var(--street-vendor-color);
+}
+
+/* Map Customization */
+.leaflet-control-zoom a {
+    background-color: var(--street-vendor-color) !important;
+    color: var(--white) !important;
+}
+
+.range-circle {
+    fill: rgba(255, 107, 107, 0.2);
+    stroke: var(--street-vendor-color);
+    stroke-width: 2;
+}
+
+/* Filter Panel Customization */
+.street-vendor-theme .filter-panel {
+    border-left: 4px solid var(--street-vendor-color);
+}
+
+/* Special Offers Section */
+.special-offers {
+    background: linear-gradient(135deg, var(--street-vendor-color), #ff5252);
+    color: var(--white);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.special-offers h3 {
+    margin-bottom: 12px;
+}
+
+.offer-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.offer-item:last-child {
+    margin-bottom: 0;
+}
+
+.offer-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.offer-description {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.quick-action {
+    flex: 1;
+    background: var(--white);
+    border: 2px solid var(--street-vendor-color);
+    color: var(--street-vendor-color);
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.quick-action:hover {
+    background: var(--street-vendor-color);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+.quick-action i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.quick-action span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Regular Customer Badge */
+.regular-customer-badge {
+    background: linear-gradient(135deg, #ffd700, #ffb300);
+    color: var(--primary-dark);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+/* Buy Now Pay Later Option */
+.buy-now-pay-later {
+    background: #e8f5e8;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.buy-now-pay-later-title {
+    color: #2e7d32;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.buy-now-pay-later-description {
+    color: #388e3c;
+    font-size: 14px;
+}
+
+/* Transport Request Section */
+.transport-request {
+    background: #f3e5f5;
+    border: 2px solid #9c27b0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.transport-request h4 {
+    color: #7b1fa2;
+    margin-bottom: 12px;
+}
+
+.transport-options {
+    display: grid;
+    gap: 12px;
+}
+
+.transport-option-card {
+    background: var(--white);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.transport-option-card:hover {
+    border-color: #9c27b0;
+    box-shadow: 0 2px 8px rgba(156, 39, 176, 0.2);
+}
+
+.transport-option-card.selected {
+    border-color: #9c27b0;
+    background: #f3e5f5;
+}
+
+.transport-provider {
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+}
+
+.transport-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transport-price {
+    color: #9c27b0;
+    font-weight: 600;
+}
+
+.transport-rating {
+    color: #ffa000;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .quick-actions {
+        flex-direction: column;
+    }
+    
+    .collaboration-members {
+        flex-wrap: wrap;
+    }
+    
+    .transport-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unified Live Tracking Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; margin: 0; }
+    .tracking-header { text-align: center; padding: 24px 0 8px; color: #0066cc; font-size: 2rem; font-weight: 700; }
+    #map { width: 100%; height: 75vh; border-radius: 18px; box-shadow: 0 4px 24px #0066cc22; margin: 0 auto; max-width: 900px; }
+    .distance-label { pointer-events: none; z-index: 1201; }
+    .supplier-marker { z-index: 1200; }
+    .user-marker { z-index: 1200; }
+    @media (max-width: 600px) { #map { max-width: 100%; border-radius: 0; } }
+  </style>
+</head>
+<body>
+  <div class="tracking-header">Unified Live Tracking Dashboard</div>
+  <div id="map"></div>
+  <div style="text-align:center;margin:10px 0;color:#0066cc;font-weight:500;">
+    Your location is being sent live and shown on the map.
+  </div>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    // --- 1. Setup: Supplier (static or live) and map ---
+    // Supplier's location (static for now, can be made live via WebSocket)
+    let supplierLatLng = L.latLng(11.0168, 76.9558); // Coimbatore
+
+    // 2. Initialize map and tile layer
+    const map = L.map('map');
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 3. Supplier marker (red pin)
+    const supplierMarker = L.marker(supplierLatLng, {
+      icon: L.divIcon({
+        className: 'supplier-marker',
+        html: `<div style="background:#e53935;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 8px #e5393588;"></div>`,
+        iconAnchor: [11, 11]
+      })
+    }).addTo(map).bindPopup('Supplier (Coimbatore)');
+
+    // 4. Your live marker (moving)
+    let userMarker = null;
+    let accuracyCircle = null;
+    let userLatLng = null;
+
+    // 5. Line and distance label
+    let connectingLine = null;
+    let distanceLabel = null;
+
+    function formatDistance(meters) {
+      return (meters / 1000).toFixed(2) + ' km';
+    }
+
+    function updateLineAndDistance() {
+      if (!userLatLng || !supplierLatLng) return;
+
+      // Draw or update the line
+      if (!connectingLine) {
+        connectingLine = L.polyline([userLatLng, supplierLatLng], {
+          color: '#1976d2',
+          weight: 5,
+          opacity: 0.85
+        }).addTo(map);
+      } else {
+        connectingLine.setLatLngs([userLatLng, supplierLatLng]);
+      }
+
+      // Midpoint for label
+      const midLat = (userLatLng.lat + supplierLatLng.lat) / 2;
+      const midLng = (userLatLng.lng + supplierLatLng.lng) / 2;
+      const distance = userLatLng.distanceTo(supplierLatLng);
+
+      // Draw or update the distance label
+      if (!distanceLabel) {
+        distanceLabel = L.marker([midLat, midLng], {
+          icon: L.divIcon({
+            className: 'distance-label',
+            html: `<div style="background:#fff;color:#1976d2;padding:4px 14px;border-radius:10px;box-shadow:0 2px 8px #1976d244;font-weight:600;font-size:1.1rem;border:2px solid #1976d2;">${formatDistance(distance)}</div>`,
+            iconAnchor: [0, 0]
+          }),
+          interactive: false
+        }).addTo(map);
+      } else {
+        distanceLabel.setLatLng([midLat, midLng]);
+        distanceLabel.setIcon(L.divIcon({
+          className: 'distance-label',
+          html: `<div style="background:#fff;color:#1976d2;padding:4px 14px;border-radius:10px;box-shadow:0 2px 8px #1976d244;font-weight:600;font-size:1.1rem;border:2px solid #1976d2;">${formatDistance(distance)}</div>`,
+          iconAnchor: [0, 0]
+        }));
+      }
+    }
+
+    // 6. Fit map to both points (initially)
+    function fitMap() {
+      if (userLatLng && supplierLatLng) {
+        const bounds = L.latLngBounds([userLatLng, supplierLatLng]);
+        map.fitBounds(bounds.pad(0.25));
+      } else {
+        map.setView(supplierLatLng, 13);
+      }
+    }
+
+    // 7. Live location sending and marker updating
+    const WEBSOCKET_URL = 'ws://localhost:3000';
+    let ws = null;
+
+    function connectWebSocket() {
+      ws = new WebSocket(WEBSOCKET_URL);
+      ws.onopen = () => {
+        // Start sending location every 5 seconds
+        startSendingLocation();
+      };
+      ws.onclose = () => {
+        setTimeout(connectWebSocket, 3000);
+      };
+      ws.onerror = (err) => {
+        // Optionally log error
+      };
+      ws.onmessage = (event) => {
+        // If you want to make supplier live, update supplierLatLng here
+        // const data = JSON.parse(event.data);
+        // supplierLatLng = L.latLng(data.lat, data.lng);
+        // supplierMarker.setLatLng(supplierLatLng);
+        // updateLineAndDistance();
+      };
+    }
+
+    function startSendingLocation() {
+      if (!navigator.geolocation) return;
+      setInterval(() => {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const { latitude, longitude, accuracy } = pos.coords;
+            userLatLng = L.latLng(latitude, longitude);
+
+            // Send to server
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ lat: latitude, lng: longitude }));
+            }
+
+            // Draw or update user marker
+            if (!userMarker) {
+              userMarker = L.marker(userLatLng, {
+                icon: L.divIcon({
+                  className: 'user-marker',
+                  html: `<div style="background:#1976d2;width:20px;height:20px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 8px #1976d288;"></div>`,
+                  iconAnchor: [10, 10]
+                })
+              }).addTo(map).bindPopup('You (Live)');
+            } else {
+              userMarker.setLatLng(userLatLng);
+            }
+
+            // Draw or update accuracy circle
+            if (!accuracyCircle) {
+              accuracyCircle = L.circle(userLatLng, {
+                radius: accuracy || 30,
+                color: '#1976d2',
+                fillColor: '#1976d2',
+                fillOpacity: 0.12,
+                weight: 1
+              }).addTo(map);
+            } else {
+              accuracyCircle.setLatLng(userLatLng);
+              accuracyCircle.setRadius(accuracy || 30);
+            }
+
+            updateLineAndDistance();
+            fitMap();
+          },
+          err => {
+            // Optionally handle error
+          },
+          { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 }
+        );
+      }, 5000);
+    }
+
+    // Start everything
+    connectWebSocket();
+    fitMap();
+    updateLineAndDistance();
+  </script>
+</body>
+</html>
