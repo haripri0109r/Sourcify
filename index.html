@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodChain Connect - Login</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/login.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1><i class="fas fa-utensils"></i> FoodChain Connect</h1>
+            <p>Connecting Street Food Vendors, Raw Material Suppliers & Transport Services</p>
+        </div>
+        
+        <div class="login-tabs">
+            <button class="tab-btn active" data-tab="street-vendor">
+                <i class="fas fa-store"></i>
+                Street Food Vendor
+            </button>
+            <button class="tab-btn" data-tab="raw-material">
+                <i class="fas fa-boxes"></i>
+                Raw Material Vendor
+            </button>
+            <button class="tab-btn" data-tab="transport">
+                <i class="fas fa-truck"></i>
+                Transport Service
+            </button>
+        </div>
+
+        <div class="login-forms">
+            <!-- Street Food Vendor Login -->
+            <div class="login-form active" id="street-vendor">
+                <div class="form-container">
+                    <h2>Street Food Vendor Login</h2>
+                    <form id="streetVendorForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Username or Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="login-btn street-vendor-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login as Vendor
+                        </button>
+                    </form>
+                    <div class="form-footer">
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                        <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raw Material Vendor Login -->
+            <div class="login-form" id="raw-material">
+                <div class="form-container">
+                    <h2>Raw Material Supplier Login</h2>
+                    <form id="rawMaterialForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Username or Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="login-btn raw-material-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login as Supplier
+                        </button>
+                    </form>
+                    <div class="form-footer">
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                        <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transport Service Login -->
+            <div class="login-form" id="transport">
+                <div class="form-container">
+                    <h2>Transport Service Login</h2>
+                    <form id="transportForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Username or Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="login-btn transport-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login as Transport
+                        </button>
+                    </form>
+                    <div class="form-footer">
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                        <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/login.js"></script>
+</body>
+</html>
